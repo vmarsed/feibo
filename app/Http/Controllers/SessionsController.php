@@ -23,7 +23,7 @@ class SessionsController extends Controller
             'email'=>'required|email|max:255',
             'password'=>'required',
         ]);
-        if(Auth::attempt($credentials)){
+        if(Auth::attempt($credentials,$request->has('remember'))){
             session()->flash('success','欢迎回来');
             // Auth::user() 方法来获取 当前登录用户 的信息，并将数据传送给路由。
             // users.show 路由需要的参数是用户的 id,这里应该是默认读取id
