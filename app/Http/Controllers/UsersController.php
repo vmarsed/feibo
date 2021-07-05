@@ -13,7 +13,7 @@ class UsersController extends Controller
             // only 仅这些方法需要登录
             // 未登录的，默认重定向到 /login 页面
             // 注意，此时未登录的编辑不了，已登录的是可以改别人的 用 /users/id/edit
-            'except'=>['show','create','store']
+            'except'=>['index','show','create','store']
         ]);
         /*
             auth:{
@@ -87,5 +87,11 @@ class UsersController extends Controller
         $user->update($data);
         session()->flash('success','个人资料更新成功！');
         return redirect()->route('users.show',$user->id);
+    }
+    function index()
+    {
+        // $users=User::all();//这是不分页的写法
+        $users=User::paginate(6);
+        return view('users.index',compact('users'));
     }
 }
