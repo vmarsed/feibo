@@ -3,17 +3,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
+use Mail;
 
 class UsersController extends Controller
 {
-    function __construct()
-    {
+    function __construct(){
         $this->middleware('auth',[
             // except 除了以下方法，其他都要先登录
             // only 仅这些方法需要登录
             // 未登录的，默认重定向到 /login 页面
             // 注意，此时未登录的编辑不了，已登录的是可以改别人的 用 /users/id/edit
-            'except'=>['index','show','create','store']
+            'except'=>['show','create','store','index','confirmEmail']
         ]);
         /*
             auth:{
@@ -38,16 +38,13 @@ class UsersController extends Controller
             'only'=>['create']
         ]);
     }
-    function create()
-    {
+    function create(){
         return view('users.create');
     }
-    function show(User $user)
-    {
+    function show(User $user){
         return view('users.show',compact('user'));
     }
-    function store(Request $request)
-    {
+    function store(Request $request){
         # validate 方法是父类提供的
         # 注意 unique:users 用的表名(复数),而不是模式名(单数)
         $this->validate($request,[
@@ -61,19 +58,20 @@ class UsersController extends Controller
             'email'=>$request->email,
             'password'=>bcrypt($request->password),
         ]);
-
-        Auth::login($user);
-        session()->flash('success','欢迎，您将在这里开启一段新的旅程~');
-        return redirect()->route('users.show',[$user]);
+        
+        // Auth::login($user);
+        // session()->flash('success','欢迎，您将在这里开启一段新的旅程~');
+        // return redirect()->route('users.show',[$user]);
+        $this->sendEmailConfirmationTo($user);
+        session()->flash('success','验证邮件已发送到你的注册邮箱上，请注意查收。');
+        return redirect('/');
 
     }
-    function edit(User $user)
-    {
+    function edit(User $user){
         $this->authorize('update', $user);
         return view('users.edit',compact('user'));
     }
-    function update(User $user, Request $request)
-    {
+    function update(User $user, Request $request){
         $this->authorize('update', $user);
         $this->validate($request,[
             'name'=>'required|max:50',
@@ -88,14 +86,12 @@ class UsersController extends Controller
         session()->flash('success','个人资料更新成功！');
         return redirect()->route('users.show',$user->id);
     }
-    function index()
-    {
+    function index(){
         // $users=User::all();//这是不分页的写法
         $users=User::paginate(6);
         return view('users.index',compact('users'));
     }
-    function destroy(User $user)
-    {
+    function destroy(User $user){
         // 引用删除策略
         $this->authorize('destroy', $user);
         // 首先会根据路由发送过来的用户 id 进行数据查找，
@@ -107,4 +103,31 @@ class UsersController extends Controller
         // 最后将用户重定向到上一次进行删除操作的页面，即用户列表页。
         return back();
     }
+    function confirmEmail($token){
+        /*
+            where 方法接收两个参数，第一个参数为要进行查找的字段名称，
+            第二个参数为对应的值，查询结果返回的是一个数
+        */
+        $user=User::where('activation_token',$token)->firstOrFail();
+        $user->activated=true;
+        $user->activation_token=null;
+        $user->save();
+        Auth::login($user);
+        session()->flash('success','恭喜你,激活成功!');
+        return redirect()->route('users.show',[$user]);   
+        return view('emails.confirm',compact($user));
+    }
+    protected function sendEmailConfirmationTo($user){
+        $view = 'emails.confirm';
+        $data = compact('user');
+        $from = 'summer@example.com';
+        $name = 'Summer';
+        $to = $user->email;
+        $subject = "感谢注册 Feibo 应用！请确认你的邮箱。";
+
+        Mail::send($view,$data,function($message)use($from,$name,$to,$subject){
+            $message->from($from,$name)->to($to)->subject($subject);
+        });
+    }
+
 }
