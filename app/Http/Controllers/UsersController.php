@@ -15,6 +15,25 @@ class UsersController extends Controller
             // 注意，此时未登录的编辑不了，已登录的是可以改别人的 用 /users/id/edit
             'except'=>['show','create','store']
         ]);
+        /*
+            auth:{
+                已登录用户:可访问 所有方法
+                未登录用户:可访问 show, create, store
+                测试: 不登录访问show feibo.test/users/1 => 可以访问
+                测试: 不登录访问edit feibo.test/users/1/edit => redirect to login
+
+                因为已登录 已登录用户也可以访问 注册页create
+                为此加上下面的 middleware.guest
+                表示, create 方法仅 guest 访客可访问
+                已登录用户无法访问
+                测试: 登录后访问 feibo.test/signup
+
+                注意,guest middleware是这个页面仅访客才能访问
+                而不是,访客只能访问这个页面
+
+                而 auth middleware 就真的是限制 访客可以访问哪些方法 和 登录后可访问哪些方法
+            }
+        */
         $this->middleware('guest',[
             'only'=>['create']
         ]);

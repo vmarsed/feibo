@@ -35,7 +35,7 @@ class SessionsController extends Controller
             // users.show 路由需要的参数是用户的 id,这里应该是默认读取id
             $fallback=route('users.show',Auth::user());
             // return redirect()->route('users.show',[Auth::user()]);
-            return direct()->intended($fallback);
+            return redirect()->intended($fallback);
         }else{
             session()->flash('danger','很抱歉,您的邮箱和密码不匹配');
             return redirect()->back()->withInput();
