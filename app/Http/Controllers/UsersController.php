@@ -2,10 +2,20 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Auth;
 
 class UsersController extends Controller
 {
-    public function create()
+    function __construct()
+    {
+        $this->middleware('auth',[
+            // except 除了以下方法，其他都要先验证
+            // only 仅这些方法需要验证
+            // 未验证的，默认重定向到 /login 页面
+            'except'=>['show','create','store']
+        ]);
+    }
+    function create()
     {
         return view('users.create');
     }
