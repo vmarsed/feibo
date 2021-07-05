@@ -96,7 +96,7 @@ class UsersController extends Controller
     }
     function destroy(User $user)
     {
-        引用删除策略
+        // 引用删除策略
         $this->authorize('destroy', $user);
         // 首先会根据路由发送过来的用户 id 进行数据查找，
         // 查找到指定用户之后再调用 Eloquent 模型提供的 delete 方法
