@@ -94,4 +94,17 @@ class UsersController extends Controller
         $users=User::paginate(6);
         return view('users.index',compact('users'));
     }
+    function destroy(User $user)
+    {
+        引用删除策略
+        $this->authorize('destroy', $user);
+        // 首先会根据路由发送过来的用户 id 进行数据查找，
+        // 查找到指定用户之后再调用 Eloquent 模型提供的 delete 方法
+        // 对用户资源进行删除
+        $user->delete();
+        // 成功删除后在页面顶部进行消息提示。
+        session()->flash('success','成功删除用户!');
+        // 最后将用户重定向到上一次进行删除操作的页面，即用户列表页。
+        return back();
+    }
 }

@@ -26,6 +26,7 @@ class UserTableSeeder extends Seeder
         $user=User::find(1);
         $user->name = 'Marson';
         $user->email = 'Marson@google.com';
+        $user->is_admin=true;
         $user->save();
 
         // 定义完自己的 Seeder 要到同目录下的 DatabaseSeeder 中
