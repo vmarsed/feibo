@@ -9,10 +9,14 @@ class UsersController extends Controller
     function __construct()
     {
         $this->middleware('auth',[
-            // except 除了以下方法，其他都要先验证
-            // only 仅这些方法需要验证
-            // 未验证的，默认重定向到 /login 页面
+            // except 除了以下方法，其他都要先登录
+            // only 仅这些方法需要登录
+            // 未登录的，默认重定向到 /login 页面
+            // 注意，此时未登录的编辑不了，已登录的是可以改别人的 用 /users/id/edit
             'except'=>['show','create','store']
+        ]);
+        $this->middleware('guest',[
+            'only'=>['create']
         ]);
     }
     function create()
@@ -46,10 +50,12 @@ class UsersController extends Controller
     }
     function edit(User $user)
     {
+        $this->authorize('update', $user);
         return view('users.edit',compact('user'));
     }
     function update(User $user, Request $request)
     {
+        $this->authorize('update', $user);
         $this->validate($request,[
             'name'=>'required|max:50',
             'password'=>'nullable|confirmed|min:6'
