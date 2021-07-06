@@ -46,3 +46,18 @@ Route::resource('statuses','StatusesController',['only'=>['store','destroy']]);
 // 11.4 制作 粉丝列表页 followers, 关注人列表页 followings
 Route::get('/users/{user}/followers','UsersController@followers')->name('users.followers');
 Route::get('/users/{user}/followings','UsersController@followings')->name('users.followings');
+
+// 11.5 关注按钮
+// 点击按钮 action 需要有提交地址
+//关注
+Route::post('/users/followers/{user}', 'FollowersController@store')->name('followers.store');
+Route::delete('/user/followers/{user}','FollowersController@destroy')->name('followers.destroy');
+
+
+
+
+
+
+
+
+
