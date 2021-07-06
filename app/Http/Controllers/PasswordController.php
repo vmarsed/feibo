@@ -12,6 +12,19 @@ use Carbon\Carbon;
 
 class PasswordController extends Controller
 {
+    function __construct(){
+        // 对 X 控制器限制流, 一分钟 2 次
+        // http://feibo.test/password/reset
+        $this->middleware('throttle:2,1',[
+            'only'=>['showLinkRequestForm']
+        ]);
+
+        $this->middleware('throttle:3,10',[
+            'only'=>['sendResetLinkEmail']
+        ]);
+
+    }
+
     function showLinkRequestForm(){
         return view('auth.passwords.email');
     }

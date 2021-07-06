@@ -8,6 +8,10 @@ use Mail;
 class UsersController extends Controller
 {
     function __construct(){
+        // 注册限流, 10次每小时
+        $this->middleware('throttle:10,60',[
+            'only'=>['store']
+        ]);
         $this->middleware('auth',[
             // except 除了以下方法，其他都要先登录
             // only 仅这些方法需要登录

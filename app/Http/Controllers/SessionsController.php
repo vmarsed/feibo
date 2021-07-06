@@ -11,6 +11,10 @@ class SessionsController extends Controller
         $this->middleware('guest',[
             'only'=>['create']
         ]);
+
+        $this->middleware('throttle:10,10',[
+            'only'=>['store']
+        ]);
     }
     // Route::get('login','SessionsController@create')->name('login');
     // Route::post('login','SessionsController@store')->name('login');
