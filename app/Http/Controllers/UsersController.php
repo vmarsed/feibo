@@ -46,7 +46,9 @@ class UsersController extends Controller
         return view('users.create');
     }
     function show(User $user){
-        return view('users.show',compact('user'));
+        // return view('users.show',compact('user'));
+        $statuses = $user->statuses()->orderBy('created_at', 'desc')->paginate(30);
+        return view('users.show', compact('user', 'statuses'));
     }
     function store(Request $request){
         # validate 方法是父类提供的
