@@ -1,5 +1,4 @@
 @extends('layouts.default')
-@section('title', 'Home')
 
 @section('content')
 	@IF(Auth::check())
@@ -17,6 +16,12 @@
 			<aside class="col-md-4">
 				<section class="user_info">
 					@include('shared._user_info',['user'=>Auth::user()])
+				</section>
+
+				{{-- 11.3 新增 1 session --}}
+				{{-- 把当前用户 Auth::user() 发过去, 子View显示当前用户的关注和粉丝信息 --}}
+				<section class="stats mt-2">
+					@include('shared._stats',['user'=>Auth::user()])
 				</section>
 			</aside>
 
