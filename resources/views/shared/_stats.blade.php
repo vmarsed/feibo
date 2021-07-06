@@ -1,18 +1,19 @@
-<a href="#">
+{{-- 这个 User->id 不是当前用户码, 父视图把当前用户传过来的? --}}
+<a href="{{ route('users.followings',$user->id) }}">
     <strong id="following" class="stat">
         {{ count($user->followings) }}
     </strong>   
     关注
 </a>
 
-<a href="#">
+<a href="{{ route('users.followers',$user->id) }}">
     <strong id="followers" class="stat">
         {{ count($user->followers) }}
     </strong>
     粉丝
 </a>
 
-<a href="#">
+<a href="{{ route('users.show',$user->id) }}">
     <strong id="statuses" class="stat">
         {{ $user->statuses()->count() }}
         {{-- {{ count($user->statuses()) }} --}}   {{-- 报错 count 参数必需是数组或对象 --}}

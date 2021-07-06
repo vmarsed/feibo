@@ -42,3 +42,7 @@ Route::post('password/reset','PasswordController@reset')->name('password.update'
 Route::resource('statuses','StatusesController',['only'=>['store','destroy']]);
 // | POST      | statuses               | statuses.store   | App\Http\Controllers\StatusesController@store               | web            |
 // | DELETE    | statuses/{status}      | statuses.destroy | App\Http\Controllers\StatusesController@destroy             | web            |
+
+// 11.4 制作 粉丝列表页 followers, 关注人列表页 followings
+Route::get('/users/{user}/followers','UsersController@followers')->name('users.followers');
+Route::get('/users/{user}/followings','UsersController@followings')->name('users.followings');
