@@ -130,7 +130,8 @@ class UsersController extends Controller
         $subject = "感谢注册 Feibo 应用！请确认你的邮箱。";
 
         Mail::send($view,$data,function($message)use($from,$name,$to,$subject){
-            $message->from($from,$name)->to($to)->subject($subject);
+            // $message->from($from,$name)->to($to)->subject($subject); // log邮件写法
+            $message->to($to)->subject($subject);
         });
     }
 
